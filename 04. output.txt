@@ -1,0 +1,268 @@
+/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/bin/java -javaagent:/Users/raminduwalgama/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/222.4345.14/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=62292:/Users/raminduwalgama/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/222.4345.14/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/cat.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/cldrdata.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/crs-agent.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/dnsns.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/jaccess.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/legacy8ujsse.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/localedata.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/nashorn.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/openjsse.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/sunec.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/ext/zipfs.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/management-agent.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/rt.jar:/Users/raminduwalgama/Desktop/Projects/Education/Lectures/Concurrent Programming/Coursework/Implementation/out/production/Implementation PrintingSystem
+
+----------------------------------------------------------
+------------ Welcome to the Printer Simulator! -----------
+----------------------------------------------------------
+
+--------- CREATED [Monitor] : [Laser Printer]
+--------- CREATED [THREAD GROUP] : [Student]
+--------- CREATED [THREAD GROUP] : [Technician]
+--------- CREATED [THREAD] : [Student 1]
+--------- CREATED [THREAD] : [Student 2]
+--------- CREATED [THREAD] : [Student 3]
+--------- CREATED [THREAD] : [Student 4]
+--------- CREATED [THREAD] : [Paper Technician]
+--------- CREATED [THREAD] : [Toner Technician]
+[Student 1] : [ STATUS => RUNNABLE ]
+[Student 2] : [ STATUS => RUNNABLE ]
+[Student 3] : [ STATUS => RUNNABLE ]
+[Student 4] : [ STATUS => RUNNABLE ]
+[Paper Technician] : [ STATUS => RUNNABLE ]
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING PAPER' | Paper Level: 100 | Toner Level: 100 | Documents Printed: 0 ]
+ {
+	 [ PERSON : Paper Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PAPER REFILLED' | Paper Level: 150 | Toner Level: 100 | Documents Printed: 0 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 150 | Toner Level: 100 | Documents Printed: 0 ]
+ {
+	 [  PERSON: Student 1 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework I | Pages: 10 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 140 | Toner Level: 90 | Documents Printed: 1 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 140 | Toner Level: 90 | Documents Printed: 1 ]
+ {
+	 [  PERSON: Student 3 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework I | Pages: 4 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 136 | Toner Level: 86 | Documents Printed: 2 ]
+
+[Toner Technician] : [ STATUS => RUNNABLE ]
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 136 | Toner Level: 86 | Documents Printed: 2 ]
+ {
+	 [  PERSON: Student 4 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework I | Pages: 2 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 134 | Toner Level: 84 | Documents Printed: 3 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 134 | Toner Level: 84 | Documents Printed: 3 ]
+ {
+	 [  PERSON: Student 2 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework I | Pages: 9 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 125 | Toner Level: 75 | Documents Printed: 4 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING TONER' | Paper Level: 125 | Toner Level: 75 | Documents Printed: 4 ]
+ {
+	 [ PERSON : Toner Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 125 | Toner Level: 75 | Documents Printed: 4 ]
+ {
+	 [  PERSON: Student 4 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework II | Pages: 1 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 124 | Toner Level: 74 | Documents Printed: 5 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 124 | Toner Level: 74 | Documents Printed: 5 ]
+ {
+	 [  PERSON: Student 3 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework II | Pages: 1 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 123 | Toner Level: 73 | Documents Printed: 6 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'ERROR: TONER REPLACED FAILED' | Paper Level: 123 | Toner Level: 73 | Documents Printed: 6 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 123 | Toner Level: 73 | Documents Printed: 6 ]
+ {
+	 [  PERSON: Student 1 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework II | Pages: 1 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 122 | Toner Level: 72 | Documents Printed: 7 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 122 | Toner Level: 72 | Documents Printed: 7 ]
+ {
+	 [  PERSON: Student 4 ]
+	 [ DOCUMENT: 'Finite Automata - Assignment II | Pages: 5 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 117 | Toner Level: 67 | Documents Printed: 8 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 117 | Toner Level: 67 | Documents Printed: 8 ]
+ {
+	 [  PERSON: Student 4 ]
+	 [ DOCUMENT: 'Operating System - Semaphore is OS | Pages: 9 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 108 | Toner Level: 58 | Documents Printed: 9 ]
+ {
+	 [  PERSON: Student 2 ]
+	 [ DOCUMENT: 'Concurrent Programming - Coursework II | Pages: 6 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 102 | Toner Level: 52 | Documents Printed: 10 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 102 | Toner Level: 52 | Documents Printed: 10 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 102 | Toner Level: 52 | Documents Printed: 10 ]
+ {
+	 [  PERSON: Student 1 ]
+	 [ DOCUMENT: 'Finite Automata - Assignment II | Pages: 2 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 100 | Toner Level: 50 | Documents Printed: 11 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 100 | Toner Level: 50 | Documents Printed: 11 ]
+ {
+	 [  PERSON: Student 4 ]
+	 [ DOCUMENT: 'Data Structures and Algorithms - Booyer More Algorithm | Pages: 1 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 99 | Toner Level: 49 | Documents Printed: 12 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 99 | Toner Level: 49 | Documents Printed: 12 ]
+ {
+	 [  PERSON: Student 3 ]
+	 [ DOCUMENT: 'Finite Automata - Assignment II | Pages: 8 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 91 | Toner Level: 41 | Documents Printed: 13 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING TONER' | Paper Level: 91 | Toner Level: 41 | Documents Printed: 13 ]
+ {
+	 [ PERSON : Toner Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 91 | Toner Level: 41 | Documents Printed: 13 ]
+ {
+	 [  PERSON: Student 3 ]
+	 [ DOCUMENT: 'Operating System - Semaphore is OS | Pages: 10 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 81 | Toner Level: 31 | Documents Printed: 14 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 81 | Toner Level: 31 | Documents Printed: 14 ]
+ {
+	 [  PERSON: Student 2 ]
+	 [ DOCUMENT: 'Finite Automata - Assignment II | Pages: 7 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 74 | Toner Level: 24 | Documents Printed: 15 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'ERROR: TONER REPLACED FAILED' | Paper Level: 74 | Toner Level: 24 | Documents Printed: 15 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 74 | Toner Level: 24 | Documents Printed: 15 ]
+ {
+	 [  PERSON: Student 1 ]
+	 [ DOCUMENT: 'Operating System - Semaphore is OS | Pages: 3 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 71 | Toner Level: 21 | Documents Printed: 16 ]
+
+--------- [ Student 4 ] FINISHED ALL 5 DOCUMENTS
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 71 | Toner Level: 21 | Documents Printed: 16 ]
+ {
+	 [  PERSON: Student 3 ]
+	 [ DOCUMENT: 'Data Structures and Algorithms - Booyer More Algorithm | Pages: 3 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 68 | Toner Level: 18 | Documents Printed: 17 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 68 | Toner Level: 18 | Documents Printed: 17 ]
+ {
+	 [  PERSON: Student 1 ]
+	 [ DOCUMENT: 'Data Structures and Algorithms - Booyer More Algorithm | Pages: 7 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 61 | Toner Level: 11 | Documents Printed: 18 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 61 | Toner Level: 11 | Documents Printed: 18 ]
+ {
+	 [  PERSON: Student 2 ]
+	 [ DOCUMENT: 'Operating System - Semaphore is OS | Pages: 1 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 60 | Toner Level: 10 | Documents Printed: 19 ]
+
+--------- [ Student 3 ] FINISHED ALL 5 DOCUMENTS
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PRINTING' | Paper Level: 60 | Toner Level: 10 | Documents Printed: 19 ]
+ {
+	 [  PERSON: Student 2 ]
+	 [ DOCUMENT: 'Data Structures and Algorithms - Booyer More Algorithm | Pages: 2 ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'DOCUMENT PRINTED' | Paper Level: 58 | Toner Level: 8 | Documents Printed: 20 ]
+
+--------- [ Student 1 ] FINISHED ALL 5 DOCUMENTS
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING TONER' | Paper Level: 58 | Toner Level: 8 | Documents Printed: 20 ]
+ {
+	 [ PERSON : Toner Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'TONER REPLACED' | Paper Level: 58 | Toner Level: 500 | Documents Printed: 20 ]
+
+--------- [ Toner Technician ] FINISHED ALL 1 TONER CARTRIDGES REPLACED
+--------- [ Student 2 ] FINISHED ALL 5 DOCUMENTS
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING PAPER' | Paper Level: 58 | Toner Level: 500 | Documents Printed: 20 ]
+ {
+	 [ PERSON : Paper Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PAPER REFILLED' | Paper Level: 108 | Toner Level: 500 | Documents Printed: 20 ]
+
+
+[  PRINTER: 'Laser Printer' | STATUS : 'REPLACING PAPER' | Paper Level: 108 | Toner Level: 500 | Documents Printed: 20 ]
+ {
+	 [ PERSON : Paper Technician ]
+}
+
+[  PRINTER: 'Laser Printer' | STATUS : 'PAPER REFILLED' | Paper Level: 158 | Toner Level: 500 | Documents Printed: 20 ]
+
+--------- [ Paper Technician ] FINISHED ALL 3 PACKS OF PAPER USED
+[Student 1] : [ STATUS => TERMINATED ]
+[Student 2] : [ STATUS => TERMINATED ]
+[Student 3] : [ STATUS => TERMINATED ]
+[Student 4] : [ STATUS => TERMINATED ]
+[Paper Technician] : [ STATUS => TERMINATED ]
+[Toner Technician] : [ STATUS => TERMINATED ]
+
+----------------------------------------------------------
+---------------- All Threads Terminated ! ----------------
+----------------------------------------------------------
+
+
+Process finished with exit code 0
