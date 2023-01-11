@@ -9,11 +9,13 @@ public class TonerTechnician extends Thread {
     }
 
     /*
-    This class is very similar to the paper technician class, except it attempts to replace
-     the toner three times, using the printer's replaceTonerCartridge( ) method.
-     When he/she has finished trying to replace the toner cartridge, print out a message,
-     stating it has finished and how many toner cartridges it replaced, e.g.
-    Toner Technician Finished, cartridges replaced: 2
+    * Toner technician tries to replace the toner 3 times.
+    * Sleep random time after each attempt he tries to replace the toner.
+    * Note that the toner technician is not aware of the printer's state,
+    *       so he/she will attempt to replace the toner even if it is full,
+    *       OR if it is not empty but not less than 10, it will skip the term
+    * In these cases replacing toner cartridge will be unsuccessful and printing the "ERROR: TONER REPLACED FAILED"
+    * status message.
      */
     @Override
     public void run() {
@@ -23,22 +25,23 @@ public class TonerTechnician extends Thread {
             printer.replaceTonerCartridge();
             if (((LaserPrinter) printer).isTonerReplaced()) {
                 numberOfReplace ++;
-                logger.printPrinterStatus(printer, "TONER REFILLED");
+                logger.printPrinterStatus(printer, "TONER REPLACED");
             } else {
-                logger.printPrinterStatus(printer, "ERROR: TONER REFILLED FAILED");
+                logger.printPrinterStatus(printer, "ERROR: TONER REPLACED FAILED");
             }
             try {
-                // sleep thread for a random amount of time between 1 and 100 milliseconds (inclusive)
+                // sleep thread for a random amount of time between 1 and 1000 milliseconds (inclusive)
                 sleep(Utility.randomThreadSleepTime());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        // Paper Technician Finished
+        // Summarize the toner technician's work, e.g. Toner Technician Finished, toner replaced: 2
         logger.printThreadFinishStatus(this, numberOfReplace, "TONER CARTRIDGES REPLACED");
     }
 
+    // ------------------ toString() ------------------
     @Override
     public String toString() {
         return "[ PAPER_TECHNICIAN : " + this.getName() + " ]";

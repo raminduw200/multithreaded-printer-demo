@@ -1,13 +1,10 @@
 public class LaserPrinter implements ServicePrinter {
-    /*
-    printer's name/id, the current paper level, the current toner level and the number of documents printed.
-     */
     private final String printerID;
     private int currentPaperLevel;
     private int currentTonerLevel;
     private int noOfDocsPrinted;
 
-    // K
+    // Below attributes used to check whether the action performed was successful or not.
     private boolean paperRefilled = false;
     private boolean tonerReplaced = false;
     private boolean documentPrinted = false;
@@ -21,19 +18,22 @@ public class LaserPrinter implements ServicePrinter {
     }
 
     /*
-    Allow students to print "documents" using the printDocument( document) method, provided it has
-    sufficient quantities of paper and toner to be able to print the document.
-    Assume that to print one page of a document you need 1 sheet of paper and 1 unit of toner.
-    Example: the printer can print a 10 page document provided both the paper and toner
-    are greater than 10; and that printing this document reduces each by 10.
-    If either the paper or toner (or both) are less than 10 then the document cannot be printed and
-    printing must wait until there is enough of both to print it.
+    * Print the document if the printer has sufficient quantities of paper and toner to be able to print the document.
+    * If either the paper or toner (or both) are less than document page count then the document cannot be printed and
+    * printing must wait until there is enough of both to print it.
+    * Note that there are three important facts to consider when printing the document which is mentioned in the below
+    * if statement.
+    *   - if document is larger than the print tray or
+    *   - if document is larger than the toner capacity or
+    *   - if document is larger than the minimum toner level and the current toner level is larger than the minimum
+    *     toner level
+    * In those cases it will skip the printing document and continue because those actions can not be performed.
      */
     @Override
     public synchronized void printDocument(Document document) {
         paperRefilled = false;
         while (document.getNumberOfPages() > currentPaperLevel ||
-                document.getNumberOfPages() > currentTonerLevel) { // TODO : What if there is a document more than 250/500
+                document.getNumberOfPages() > currentTonerLevel) {
             if (
                     // if document is larger than the print tray or
                     (document.getNumberOfPages() > Full_Paper_Tray) ||
@@ -60,13 +60,17 @@ public class LaserPrinter implements ServicePrinter {
     }
 
     /*
-    Allow the toner technician to replace the toner cartridge using the replaceTonerCartridge( )
-    method, provided it needs to be replaced, i.e. has a toner level of less than 10.
-    Assume a toner cartridge can print 500 sheets of paper.
-    Example: the printer has a toner level of 9, therefore, the toner cartridge can be replaced.
-    But if it has a level of 10, then it cannot be replaced, as it would be a waste of toner,
-    and the technician should wait.
-    But he or she is only prepared to wait for 5 seconds before checking if it can be replaced it again.
+    * Replace the toner cartridge if the toner level is less than Minimum_Toner_Level which is 10.
+    * If the toner level is greater than or equal to Minimum_Toner_Level then the toner cartridge cannot be replaced and
+    * replacing must wait until the toner level is less than Minimum_Toner_Level.
+    * Note that there are two important facts to consider,
+    *       - There are 4 students tries to print 5 documents but 1 toner technician tries to refill the toner only 3
+    *         times. As mentioned in the above printDocument() method(if statement conditions),
+    *         this might lead to deadlocks. Because students and technicians work concurrently and students might have
+    *         finished printing while technicians are waiting to replace till the toner/cartridge is below the given
+    *         requirement. To avoid that situation, have added a condition to check whether the technician tried to
+    *         replace the cartridge. If the technician tried to replace the cartridge more than once then, skip
+    *         this turn and continue.
      */
     @Override
     public synchronized void replaceTonerCartridge() {
@@ -83,6 +87,11 @@ public class LaserPrinter implements ServicePrinter {
             }
             tried_count++;
         }
+        /*
+        This is to check whether technician tried more than once, but those tries are not because of the current toner
+        level less than minimum toner level of the printer. That is because students have finished printing but
+        technicians are waiting to refill but cannot refill since toner/cartridge level is not decreasing.
+         */
         if (currentTonerLevel < Minimum_Toner_Level) {
             currentTonerLevel = Full_Toner_Level;
             tonerReplaced = true;
@@ -92,12 +101,9 @@ public class LaserPrinter implements ServicePrinter {
     }
 
     /*
-    Allow the paper technician to refill the paper tray using the refillPaper( ) method.
-    Assume there are 50 sheets per pack of paper & the printer can hold up to 250 sheets of paper.
-    Example: the printer has 150 sheets of paper, therefore, it can be refilled.
-    But if it has 201 sheets of paper, then it cannot be refilled , as it would result in
-    251 sheets, and the technician should wait. But he or she is only prepared to wait
-    for 5 seconds before checking if it can be refilled it again.
+    * Same as replaceTonerCartridge() method.
+    * Additional condition is to check whether the refilling paper will not overflow the printers' tray. if not can
+    * refill the sheets of papers(50 papers).
      */
     @Override
     public synchronized void refillPaper() {
@@ -114,7 +120,11 @@ public class LaserPrinter implements ServicePrinter {
             }
             tried_count ++;
         }
-
+        /*
+        This is to check whether technician tried more than once, but those tries are not because of the current toner
+        level less than minimum toner level of the printer. That is because students have finished printing but
+        technicians are waiting to refill but cannot refill since toner/cartridge level is not decreasing.
+         */
         if (currentPaperLevel + SheetsPerPack <= Full_Paper_Tray) {
             currentPaperLevel += SheetsPerPack;
             paperRefilled = true;
@@ -123,6 +133,7 @@ public class LaserPrinter implements ServicePrinter {
         notifyAll();
     }
 
+    // ------------------ Getters ------------------
     public String getPrinterID() {
         return printerID;
     }
@@ -151,7 +162,7 @@ public class LaserPrinter implements ServicePrinter {
         return documentPrinted;
     }
 
-    //    [ PrinterID: lp-CG.24, Paper Level: 35, Toner Level: 310, Documents Printed: 4 ]
+    // ------------------ toString() ------------------
     @Override
     public synchronized String toString() {
         return "[ " +

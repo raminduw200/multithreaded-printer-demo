@@ -74,7 +74,8 @@ public class PrintingSystem {
             throw new RuntimeException(e);
         }
 
-        // In addition, it must print out reports of what it is doing and when it has finished creating the threads and other objects, etc
+        // In addition, it must print out reports of what it is doing and when it has finished creating the threads and
+        // other objects, etc
         logger.printEndMessage();
     }
 }

@@ -10,17 +10,16 @@ public class PaperTechnician extends Thread {
 
 
     /*
-    • Attempt to refill the printer's paper trays three times, using the printer's refillPaper() method.
-    • He/she should "sleep" for a random amount of time between each attempt to refill the paper.
-    • When he/she has finished trying to refill the paper, print out a message,
-    stating it has finished and how many packs of paper it refilled the printer with, e.g.
-     */
-    /*
+    * Paper technician tries to refill the printer paper tray 3 times.
+    * Sleep random time after each attempt he tries to filter the paper tray.
+    * Note that the paper technician is not aware of the printer's state,
+    * so he/she will attempt to refill the paper tray even if it is full.
+    * In this case filling paperRefill() will be unsuccessful and printing the "ERROR: PAPER REFILLED FAILED"
+    * status message.
      */
     @Override
     public void run() {
         int numberOfRefills = 0;
-        // Paper technician attempts to refill papers three times.
         for(int i=0; i < 3; i++){
             logger.printRefillingStatus(printer, "PAPER", Thread.currentThread().getName());
             printer.refillPaper();
@@ -31,14 +30,14 @@ public class PaperTechnician extends Thread {
                 logger.printPrinterStatus(printer, "ERROR: PAPER REFILLED FAILED");
             }
             try {
-                // sleep thread for a random amount of time between 1 and 100 milliseconds (inclusive)
+                // sleep thread for a random amount of time between 1 and 1000 milliseconds (inclusive)
                 sleep(Utility.randomThreadSleepTime());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        // Paper Technician Finished
+        // Summarize the paper technician's work, e.g. Paper Technician Finished, paper refilled: 2
         logger.printThreadFinishStatus(this, numberOfRefills, "PACKS OF PAPER USED");
 
     }

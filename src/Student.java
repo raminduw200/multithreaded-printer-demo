@@ -1,8 +1,6 @@
 public class Student extends Thread {
     private final LaserPrinter printer;
     private final Logger logger;
-//    Have private data members that hold the information associated with him/her,
-//    i.e. the thread group he/she is in; his/her printer; his/her name.
 
     public Student(ThreadGroup group, LaserPrinter printer, String studentName) {
         super(group, studentName);
@@ -11,18 +9,19 @@ public class Student extends Thread {
     }
 
     /*
-    • Create and print five documents with different lengths and names.
-    • He/she should "sleep" for a random amount of time between each printing request.
-    • When he/she has finished printing, print out a message, e.g.
-    Joe Bloggs Finished Printing: 5 Documents, 95 pages
+    * Student tries to print 5 documents.
+    * Sleep random time after each attempt he tries to print the document.
+    * Note that the student is not aware of the printer's state,
+    * so he/she will attempt to print the document even if it is out of paper or toner.
+    * In these cases printing the document will be unsuccessful and printing the "ERROR: PRINTING FAILED"
+    * status message.
      */
     @Override
     public void run() {
         Document[] documents = new Document[5];
-        int numberOfDocuments = 0;
-        /*
-        Document CWK2 = new Document( "JoeBloggs", "cwk2", 20 ); printer.printDocument( CWK2 ) ;
-         */
+        int numberOfDocuments = 0; // to keep track of printed documents
+
+        // initialize the documents
         documents[0] = new Document(
                 this.getName(), "Concurrent Programming - Coursework I", Utility.randomDocumentSize());
         documents[1] = new Document(
@@ -37,6 +36,7 @@ public class Student extends Thread {
                 Utility.randomDocumentSize()
         );
 
+        // print the documents
         for(Document document: documents){
             logger.printDocumentStatus(printer, document);
             printer.printDocument(document);
@@ -58,6 +58,7 @@ public class Student extends Thread {
         logger.printThreadFinishStatus(this, numberOfDocuments, "DOCUMENTS");
     }
 
+    // ------------------ toString() ------------------
     @Override
     public String toString() {
         return "[ " + this.getName() + " ] : ";
