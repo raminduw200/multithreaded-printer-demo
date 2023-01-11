@@ -1,19 +1,19 @@
 public class LaserPrinter implements ServicePrinter {
     private final String printerID;
-    private int currentPaperLevel;
-    private int currentTonerLevel;
+    private int paperLevel;
+    private int tonerLevel;
     private int noOfDocsPrinted;
 
     // Below attributes used to check whether the action performed was successful or not.
-    private boolean paperRefilled = false;
-    private boolean tonerReplaced = false;
-    private boolean documentPrinted = false;
+    private boolean paperRefilledSuccess = false;
+    private boolean tonerReplacedSuccess = false;
+    private boolean documentPrintedSuccess = false;
 
 
-    public LaserPrinter(String printerID, int currentPaperLevel, int currentTonerLevel, int noOfDocsPrinted) {
+    public LaserPrinter(String printerID, int paperLevel, int tonerLevel, int noOfDocsPrinted) {
         this.printerID = printerID;
-        this.currentPaperLevel = currentPaperLevel;
-        this.currentTonerLevel = currentTonerLevel;
+        this.paperLevel = paperLevel;
+        this.tonerLevel = tonerLevel;
         this.noOfDocsPrinted = noOfDocsPrinted;
     }
 
@@ -31,17 +31,21 @@ public class LaserPrinter implements ServicePrinter {
      */
     @Override
     public synchronized void printDocument(Document document) {
-        paperRefilled = false;
-        while (document.getNumberOfPages() > currentPaperLevel ||
-                document.getNumberOfPages() > currentTonerLevel) {
+        documentPrintedSuccess = false;
+        while (document.getNumberOfPages() > paperLevel ||
+                document.getNumberOfPages() > tonerLevel) {
             if (
                     // if document is larger than the print tray or
                     (document.getNumberOfPages() > Full_Paper_Tray) ||
                     // if document is larger than the toner capacity or
                     (document.getNumberOfPages() > Full_Toner_Level) ||
                     // if document is larger than the minimum toner level and the current toner level is larger than
-                    // the minimum toner level
-                    (document.getNumberOfPages() > Minimum_Toner_Level && currentTonerLevel > Minimum_Toner_Level)
+                    // the minimum toner level, Example:
+                    //        Minimum_Toner_Level = 10
+                    //        tonerLevel = 11
+                    //        getNumberOfPages = 12
+
+                    (document.getNumberOfPages() > Minimum_Toner_Level && tonerLevel > Minimum_Toner_Level)
             ) {
                 break;
             }
@@ -51,10 +55,12 @@ public class LaserPrinter implements ServicePrinter {
                 throw new RuntimeException(e);
             }
         }
-        currentPaperLevel -= document.getNumberOfPages();
-        currentTonerLevel -= document.getNumberOfPages();
-        noOfDocsPrinted ++;
-        documentPrinted = true;
+        if (document.getNumberOfPages() <= paperLevel && document.getNumberOfPages() <= tonerLevel) {
+            paperLevel -= document.getNumberOfPages();
+            tonerLevel -= document.getNumberOfPages();
+            noOfDocsPrinted ++;
+            documentPrintedSuccess = true;
+        }
 
         notifyAll();
     }
@@ -75,8 +81,8 @@ public class LaserPrinter implements ServicePrinter {
     @Override
     public synchronized void replaceTonerCartridge() {
         int tried_count = 0;
-        tonerReplaced = false;
-        while (currentTonerLevel >= Minimum_Toner_Level) {
+        tonerReplacedSuccess = false;
+        while (tonerLevel >= Minimum_Toner_Level) {
             if (tried_count > 1) {
                 break;
             }
@@ -92,9 +98,9 @@ public class LaserPrinter implements ServicePrinter {
         level less than minimum toner level of the printer. That is because students have finished printing but
         technicians are waiting to refill but cannot refill since toner/cartridge level is not decreasing.
          */
-        if (currentTonerLevel < Minimum_Toner_Level) {
-            currentTonerLevel = Full_Toner_Level;
-            tonerReplaced = true;
+        if (tonerLevel < Minimum_Toner_Level) {
+            tonerLevel = Full_Toner_Level;
+            tonerReplacedSuccess = true;
         }
 
         notifyAll();
@@ -108,8 +114,8 @@ public class LaserPrinter implements ServicePrinter {
     @Override
     public synchronized void refillPaper() {
         int tried_count = 0;
-        paperRefilled = false;
-        while (currentPaperLevel + SheetsPerPack > Full_Paper_Tray) {
+        paperRefilledSuccess = false;
+        while (paperLevel + SheetsPerPack > Full_Paper_Tray) {
             if (tried_count > 1) {
                 break;
             }
@@ -125,9 +131,9 @@ public class LaserPrinter implements ServicePrinter {
         level less than minimum toner level of the printer. That is because students have finished printing but
         technicians are waiting to refill but cannot refill since toner/cartridge level is not decreasing.
          */
-        if (currentPaperLevel + SheetsPerPack <= Full_Paper_Tray) {
-            currentPaperLevel += SheetsPerPack;
-            paperRefilled = true;
+        if (paperLevel + SheetsPerPack <= Full_Paper_Tray) {
+            paperLevel += SheetsPerPack;
+            paperRefilledSuccess = true;
         }
 
         notifyAll();
@@ -138,28 +144,28 @@ public class LaserPrinter implements ServicePrinter {
         return printerID;
     }
 
-    public int getCurrentPaperLevel() {
-        return currentPaperLevel;
+    public int getPaperLevel() {
+        return paperLevel;
     }
 
-    public int getCurrentTonerLevel() {
-        return currentTonerLevel;
+    public int getTonerLevel() {
+        return tonerLevel;
     }
 
     public int getNoOfDocsPrinted() {
         return noOfDocsPrinted;
     }
 
-    public boolean isPaperRefilled() {
-        return paperRefilled;
+    public boolean isPaperRefilledSuccess() {
+        return paperRefilledSuccess;
     }
 
-    public boolean isTonerReplaced() {
-        return tonerReplaced;
+    public boolean isTonerReplacedSuccess() {
+        return tonerReplacedSuccess;
     }
 
-    public boolean isDocumentPrinted() {
-        return documentPrinted;
+    public boolean isDocumentPrintedSuccess() {
+        return documentPrintedSuccess;
     }
 
     // ------------------ toString() ------------------
@@ -167,8 +173,8 @@ public class LaserPrinter implements ServicePrinter {
     public synchronized String toString() {
         return "[ " +
                 " printerID: '" + printerID + '\'' +
-                ", Paper Level: " + currentPaperLevel +
-                ", Toner Level: " + currentTonerLevel +
+                ", Paper Level: " + paperLevel +
+                ", Toner Level: " + tonerLevel +
                 ", Documents Printed: " + noOfDocsPrinted +
                 " ]";
     }
