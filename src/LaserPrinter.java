@@ -7,6 +7,12 @@ public class LaserPrinter implements ServicePrinter {
     private int currentTonerLevel;
     private int noOfDocsPrinted;
 
+    // K
+    private boolean paperRefilled = false;
+    private boolean tonerReplaced = false;
+    private boolean documentPrinted = false;
+
+
     public LaserPrinter(String printerID, int currentPaperLevel, int currentTonerLevel, int noOfDocsPrinted) {
         this.printerID = printerID;
         this.currentPaperLevel = currentPaperLevel;
@@ -25,18 +31,30 @@ public class LaserPrinter implements ServicePrinter {
      */
     @Override
     public synchronized void printDocument(Document document) {
+        paperRefilled = false;
         while (document.getNumberOfPages() > currentPaperLevel ||
                 document.getNumberOfPages() > currentTonerLevel) { // TODO : What if there is a document more than 250/500
+            if (
+                    // if document is larger than the print tray or
+                    (document.getNumberOfPages() > Full_Paper_Tray) ||
+                    // if document is larger than the toner capacity or
+                    (document.getNumberOfPages() > Full_Toner_Level) ||
+                    // if document is larger than the minimum toner level and the current toner level is larger than
+                    // the minimum toner level
+                    (document.getNumberOfPages() > Minimum_Toner_Level && currentTonerLevel > Minimum_Toner_Level)
+            ) {
+                break;
+            }
             try {
                 wait();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e); // TODO: catch these
+                throw new RuntimeException(e);
             }
         }
-
         currentPaperLevel -= document.getNumberOfPages();
         currentTonerLevel -= document.getNumberOfPages();
         noOfDocsPrinted ++;
+        documentPrinted = true;
 
         notifyAll();
     }
@@ -52,15 +70,23 @@ public class LaserPrinter implements ServicePrinter {
      */
     @Override
     public synchronized void replaceTonerCartridge() {
-        while (currentTonerLevel > Minimum_Toner_Level) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e); // TODO: catch these
+        int tried_count = 0;
+        tonerReplaced = false;
+        while (currentTonerLevel >= Minimum_Toner_Level) {
+            if (tried_count > 1) {
+                break;
             }
+            try {
+                wait(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            tried_count++;
         }
-
-        currentTonerLevel = Full_Toner_Level;
+        if (currentTonerLevel < Minimum_Toner_Level) {
+            currentTonerLevel = Full_Toner_Level;
+            tonerReplaced = true;
+        }
 
         notifyAll();
     }
@@ -75,23 +101,61 @@ public class LaserPrinter implements ServicePrinter {
      */
     @Override
     public synchronized void refillPaper() {
+        int tried_count = 0;
+        paperRefilled = false;
         while (currentPaperLevel + SheetsPerPack > Full_Paper_Tray) {
+            if (tried_count > 1) {
+                break;
+            }
             try {
                 wait(5000);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e); // TODO: catch these
+                throw new RuntimeException(e);
             }
+            tried_count ++;
         }
-        currentPaperLevel += SheetsPerPack;
+
+        if (currentPaperLevel + SheetsPerPack <= Full_Paper_Tray) {
+            currentPaperLevel += SheetsPerPack;
+            paperRefilled = true;
+        }
 
         notifyAll();
     }
 
-//    [ PrinterID: lp-CG.24, Paper Level: 35, Toner Level: 310, Documents Printed: 4 ]
+    public String getPrinterID() {
+        return printerID;
+    }
+
+    public int getCurrentPaperLevel() {
+        return currentPaperLevel;
+    }
+
+    public int getCurrentTonerLevel() {
+        return currentTonerLevel;
+    }
+
+    public int getNoOfDocsPrinted() {
+        return noOfDocsPrinted;
+    }
+
+    public boolean isPaperRefilled() {
+        return paperRefilled;
+    }
+
+    public boolean isTonerReplaced() {
+        return tonerReplaced;
+    }
+
+    public boolean isDocumentPrinted() {
+        return documentPrinted;
+    }
+
+    //    [ PrinterID: lp-CG.24, Paper Level: 35, Toner Level: 310, Documents Printed: 4 ]
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "[ " +
-                "printerID: '" + printerID + '\'' +
+                " printerID: '" + printerID + '\'' +
                 ", Paper Level: " + currentPaperLevel +
                 ", Toner Level: " + currentTonerLevel +
                 ", Documents Printed: " + noOfDocsPrinted +
