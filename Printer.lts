@@ -1,0 +1,53 @@
+const EMPTY_TRAY 	 = 0
+const DOCUMENT_START = 1
+const MAX_DOCUMNETS  = 3
+
+range PRINTER_TRAY   = EMPTY_TRAY..MAX_DOCUMNETS
+
+set Users                    = { std1 , std2, tech }
+
+set StudentBlockedActions 	 = { lockToRefill, refill, wait }
+set TechnicianBlockedActions = { lockToPrint, print }
+
+PRINTER(SHEETS = MAX_DOCUMNETS) = PRINTER[SHEETS], 
+PRINTER[sheets : PRINTER_TRAY]  = 
+							// if the printer has papers,
+							if ( sheets > EMPTY_TRAY ) then 
+								// either enter to print transition(student tries to print) or
+								( lockToPrint -> print -> releaseLock -> PRINTER[ sheets - 1 ] 
+								// technician tries to refill but have to wait since tray is not empty
+								| lockToRefill -> wait -> releaseLock -> PRINTER[ sheets ])
+							// printer tray is empty
+							else
+								// tray is refilled by the technician
+								( lockToRefill -> refill -> releaseLock -> PRINTER[ MAX_DOCUMNETS ]) .
+
+
+STUDENT(DOCUMENT = 2) = STUDENT[DOCUMENT_START],
+STUDENT[doc : DOCUMENT_START..DOCUMENT] = (
+					lockToPrint -> print[doc] -> releaseLock -> 
+					// if documents are left to print, keep on printing
+					if (doc < DOCUMENT) then
+						STUDENT[doc+1]
+					// if document printed, then terminate
+					else 
+						( terminate -> END )
+				)
+				// alphabet extention to block actions which cannot be performed by the student. 
+				+ StudentBlockedActions 
+				// action relabelling to sync print action with the printer's print action
+				// relabel from print[i] as print
+				/ { print / print[doc : DOCUMENT_START..DOCUMENT] }.
+
+TECHNICIAN = ( 
+				// technician can refill or have to wait if there are papers left in the printer.
+				lockToRefill -> { refill, wait } -> releaseLock -> TECHNICIAN
+				| terminate -> END 
+			) 
+			// alphabet extention to block actions which cannot be performed by the technician.
+			+ TechnicianBlockedActions.
+
+||PRINTING_SYSTEM = ( std1: STUDENT(1) || std2: STUDENT(2) || tech: TECHNICIAN || Users :: PRINTER )
+						// action relabelling to sync all users' terminate action with the printer's print action
+						// relabel from std1.terminate, std2.terminate, tech.terminate as terminate
+						/ { terminate / Users.terminate }.  
