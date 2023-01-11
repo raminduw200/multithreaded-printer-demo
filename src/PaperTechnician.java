@@ -23,7 +23,7 @@ public class PaperTechnician extends Thread {
         for(int i=0; i < 3; i++){
             logger.printRefillingStatus(printer, "PAPER", Thread.currentThread().getName());
             printer.refillPaper();
-            if (((LaserPrinter) printer).isPaperRefilled()) {
+            if (((LaserPrinter) printer).isPaperRefilledSuccess()) {
                 numberOfRefills ++;
                 logger.printPrinterStatus(printer, "PAPER REFILLED");
             } else {

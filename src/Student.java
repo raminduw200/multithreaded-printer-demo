@@ -40,7 +40,7 @@ public class Student extends Thread {
         for(Document document: documents){
             logger.printDocumentStatus(printer, document);
             printer.printDocument(document);
-            if (printer.isDocumentPrinted()) {
+            if (printer.isDocumentPrintedSuccess()) {
                 numberOfDocuments++;
                 logger.printPrinterStatus(printer, "DOCUMENT PRINTED");
             } else {
@@ -48,8 +48,13 @@ public class Student extends Thread {
             }
 
             try {
-                // sleep thread for a random amount of time between 1 and 100 milliseconds (inclusive)
-                sleep(Utility.randomThreadSleepTime()/10);
+                /*
+                * sleep thread for a random amount of time between 1 and 100 milliseconds (inclusive)
+                * student sleep 5 more less times than the technicians since to avoid technicians tries to replace
+                * resources at first before the student print the documents. Students will continue without printing the
+                * document since toner or paper is not available if random time / 5.
+                 */
+                sleep(Utility.randomThreadSleepTime()/5);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

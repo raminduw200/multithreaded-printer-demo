@@ -23,7 +23,7 @@ public class TonerTechnician extends Thread {
         for(int i=0; i < 3; i++){
             logger.printRefillingStatus(printer, "TONER", Thread.currentThread().getName());
             printer.replaceTonerCartridge();
-            if (((LaserPrinter) printer).isTonerReplaced()) {
+            if (((LaserPrinter) printer).isTonerReplacedSuccess()) {
                 numberOfReplace ++;
                 logger.printPrinterStatus(printer, "TONER REPLACED");
             } else {

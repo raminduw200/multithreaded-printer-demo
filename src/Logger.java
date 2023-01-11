@@ -100,8 +100,8 @@ public class Logger {
         return "\n[ " +
                 " PRINTER: '" + printer.getPrinterID() + '\'' +
                 " | STATUS : '" + RED + status + RESET + '\'' +
-                " | Paper Level: " + setPaperLevelColor(printer.getCurrentPaperLevel()) +
-                " | Toner Level: " + setTonerLevelColor(printer.getCurrentTonerLevel()) +
+                " | Paper Level: " + setPaperLevelColor(printer.getPaperLevel()) +
+                " | Toner Level: " + setTonerLevelColor(printer.getTonerLevel()) +
                 " | Documents Printed: " + printer.getNoOfDocsPrinted() +
                 " ]\n";
     }
