@@ -1,8 +1,8 @@
 public class Utility {
     // generate random document size(pages count) between 1 and 10 (inclusive)
     public static int randomDocumentSize() {
-        int min = 1;
-        int max = 10;
+        int min = 500;
+        int max = 560;
         int range = max - min + 1;
         return (int) (Math.random() * range) + min;
     }

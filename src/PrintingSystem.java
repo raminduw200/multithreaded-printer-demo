@@ -4,11 +4,6 @@ public class PrintingSystem {
         Logger logger = Logger.getLogger();
         logger.printWelcomeMessage();
 
-        // Instantiate laser printer that will be used by the technician and the student
-        LaserPrinter laserPrinter = new LaserPrinter("Laser Printer", 100, 100, 0);
-        logger.printThreadCreateStatus("Monitor", laserPrinter.getPrinterID(), true);
-
-
 
         // Create Student thread group, to hold all the student threads
         ThreadGroup studentGroup = new ThreadGroup("Student");
@@ -18,6 +13,11 @@ public class PrintingSystem {
         ThreadGroup technicianGroup = new ThreadGroup("Technician");
         logger.printThreadCreateStatus("THREAD GROUP", technicianGroup.getName(), true);
 
+
+        // Instantiate laser printer that will be used by the technician and the student
+        LaserPrinter laserPrinter = new LaserPrinter("Laser Printer", 100, 100,
+                0, studentGroup, technicianGroup);
+        logger.printThreadCreateStatus("Monitor", laserPrinter.getPrinterID(), true);
 
 
         // Create 4 students who are using the laser printer, who belongs to Student thread group

@@ -4,16 +4,23 @@ public class LaserPrinter implements ServicePrinter {
     private int tonerLevel;
     private int noOfDocsPrinted;
 
+    private final ThreadGroup studentThreadGroup;
+    private final ThreadGroup technicianThreadGroup;
+
+
     // Below attributes used to check whether the action performed was successful or not.
     private boolean paperRefilledSuccess = false;
     private boolean tonerReplacedSuccess = false;
     private boolean documentPrintedSuccess = false;
 
 
-    public LaserPrinter(String printerID, int paperLevel, int tonerLevel, int noOfDocsPrinted) {
+    public LaserPrinter(String printerID, int paperLevel, int tonerLevel, int noOfDocsPrinted,
+                        ThreadGroup students, ThreadGroup technicians) {
         this.printerID = printerID;
         this.paperLevel = paperLevel;
         this.tonerLevel = tonerLevel;
+        this.studentThreadGroup = students;
+        this.technicianThreadGroup = technicians;
         this.noOfDocsPrinted = noOfDocsPrinted;
     }
 
@@ -45,7 +52,9 @@ public class LaserPrinter implements ServicePrinter {
                     //        tonerLevel = 11
                     //        getNumberOfPages = 12
 
-                    (document.getNumberOfPages() > Minimum_Toner_Level && tonerLevel > Minimum_Toner_Level)
+                    (document.getNumberOfPages() > Minimum_Toner_Level && tonerLevel > Minimum_Toner_Level) ||
+                    // check if technicians are there to refill
+                    !isTechniciansActive()
             ) {
                 break;
             }
@@ -83,7 +92,7 @@ public class LaserPrinter implements ServicePrinter {
         int tried_count = 0;
         tonerReplacedSuccess = false;
         while (tonerLevel >= Minimum_Toner_Level) {
-            if (tried_count > 1) {
+            if (tried_count > 1 || !isStudentsActive()) {
                 break;
             }
             try {
@@ -116,7 +125,7 @@ public class LaserPrinter implements ServicePrinter {
         int tried_count = 0;
         paperRefilledSuccess = false;
         while (paperLevel + SheetsPerPack > Full_Paper_Tray) {
-            if (tried_count > 1) {
+            if (tried_count > 1 || !isStudentsActive()) {
                 break;
             }
             try {
@@ -139,32 +148,40 @@ public class LaserPrinter implements ServicePrinter {
         notifyAll();
     }
 
+    public synchronized boolean isTechniciansActive() {
+        return this.technicianThreadGroup.activeCount() != 0;
+    }
+
+    public synchronized boolean isStudentsActive() {
+        return this.studentThreadGroup.activeCount() != 0;
+    }
+
     // ------------------ Getters ------------------
-    public String getPrinterID() {
+    public synchronized String getPrinterID() {
         return printerID;
     }
 
-    public int getPaperLevel() {
+    public synchronized int getPaperLevel() {
         return paperLevel;
     }
 
-    public int getTonerLevel() {
+    public synchronized int getTonerLevel() {
         return tonerLevel;
     }
 
-    public int getNoOfDocsPrinted() {
+    public synchronized int getNoOfDocsPrinted() {
         return noOfDocsPrinted;
     }
 
-    public boolean isPaperRefilledSuccess() {
+    public synchronized boolean isPaperRefilledSuccess() {
         return paperRefilledSuccess;
     }
 
-    public boolean isTonerReplacedSuccess() {
+    public synchronized boolean isTonerReplacedSuccess() {
         return tonerReplacedSuccess;
     }
 
-    public boolean isDocumentPrintedSuccess() {
+    public synchronized boolean isDocumentPrintedSuccess() {
         return documentPrintedSuccess;
     }
 
